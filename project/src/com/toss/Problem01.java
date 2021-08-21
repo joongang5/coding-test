@@ -1,5 +1,10 @@
 package com.toss;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 /* 스트링 s가 주어집니다. 스트링 s는 알파벳 소문자('a'~'z')와 대문자('A'~'Z')로만 이루어져 있습니다.
  * 우리는 스트링 s에서 가장 많이 쓰인 알파벳을 찾아 해당 알파벳을 return 하는 solution 함수를 구현하려고 합니다.
  * 이때, 소문자와 대문자는 같다고 판단합니다. 또한, 가장 많이 쓰인 알파벳을 반환할 때는 소문자로 반환하고, 
@@ -42,6 +47,56 @@ public class Problem01 {
 
 	public String solution(String s) {
 		
-		return null;
+		HashMap<Character, Integer> countMap = new HashMap<Character, Integer>();
+		HashSet<Character> resultSet = new HashSet<Character>();
+		
+		for (int i = 0; i < s.length(); i++) {
+			char key = Character.toLowerCase(s.charAt(i));
+			int value = countMap.getOrDefault(key, 0);
+			countMap.put(key, ++value);
+		}
+		
+		int highestValue = -1;
+		for (Map.Entry<Character, Integer> entry : countMap.entrySet()) {
+			int value = entry.getValue();
+			if (value > highestValue)
+				highestValue = value;
+		}
+		
+		for (Map.Entry<Character, Integer> entry : countMap.entrySet()) {
+			int value = entry.getValue();
+			if (value == highestValue) {
+				resultSet.add(entry.getKey());
+			}
+		}
+
+		ArrayList<Character> reservedKeys = new ArrayList<Character>();
+		reservedKeys.add('t');
+		reservedKeys.add('o');
+		reservedKeys.add('s');
+		StringBuilder sb = new StringBuilder();
+		
+		for (char key : reservedKeys) {
+			if (resultSet.contains(key)) {
+				char upperKey = Character.toUpperCase(key);
+				if (upperKey == 'S') {
+					for (int i = 0; i < highestValue; i++) {
+						sb.append(upperKey);
+					}	
+				} else {
+					sb.append(upperKey);
+				}
+			}
+		}
+
+		for (int i = 97; i <= 122; i++) {
+			if (reservedKeys.contains((char)i))
+				continue;
+			
+			if (resultSet.contains((char)i))
+				sb.append((char)i);
+		}
+		
+		return sb.toString();
 	}
 }
