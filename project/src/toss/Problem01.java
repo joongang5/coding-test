@@ -1,4 +1,4 @@
-package com.toss;
+package toss;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +45,13 @@ import java.util.Map;
 
 public class Problem01 {
 
+	public void main() {
+		String s = "aaBBTtooSS";
+		String result = solution(s);
+		
+		System.out.println(result);
+	}
+	
 	public String solution(String s) {
 		
 		HashMap<Character, Integer> countMap = new HashMap<Character, Integer>();
