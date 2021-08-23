@@ -1,16 +1,12 @@
 package main;
 
-import programmers.skill.level01.Problum02;
+import programmers.kit.hash.Level1;
 
 public class Main {
 
 	public static void main(String[] args) {
 
-		Problum02 p2 = new Problum02();
-		int[] answer = p2.solution(12345);
-		
-		for (int i = 0; i < answer.length; i++) {
-			System.out.println(answer[i]);			
-		}
+		Level1 l = new Level1();
+		l.main();
 	}
 }
