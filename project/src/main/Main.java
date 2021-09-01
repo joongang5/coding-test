@@ -1,12 +1,12 @@
 package main;
 
-import programmers.kit.hash.Level1;
+import programmers.kit.hash.Level2;
 
 public class Main {
 
 	public static void main(String[] args) {
 
-		Level1 l = new Level1();
+		Level2 l = new Level2();
 		l.main();
 	}
 }

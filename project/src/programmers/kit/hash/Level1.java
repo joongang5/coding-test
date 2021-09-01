@@ -34,8 +34,8 @@ public class Level1 {
 		String[] participant = {"mislav", "stanko", "mislav", "ana", "mislav"};
 		String[] completion = {"stanko", "mislav", "ana", "mislav"};
 		
-		String result = solution(participant, completion);
-		System.out.println(result);
+		String answer = solution(participant, completion);
+		System.out.println(answer);
 	}
 	
 	public String solution(String[] participant, String[] completion) {
