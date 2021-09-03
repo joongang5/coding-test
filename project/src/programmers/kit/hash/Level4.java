@@ -1,5 +1,10 @@
 package programmers.kit.hash;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 /* 베스트앨범
 문제 설명
 스트리밍 사이트에서 장르 별로 가장 많이 재생된 노래를 두 개씩 모아 베스트 앨범을 출시하려 합니다.
@@ -37,4 +42,76 @@ pop 장르는 3,100회 재생되었으며, pop 노래는 다음과 같습니다.
 
 public class Level4 {
 
+	public void main() {
+		String[] genres = {"classic", "pop", "classic", "classic", "pop"};
+		int[] plays = {500, 600, 150, 800, 2500};
+		
+		int[] answer = solution(genres, plays);
+		
+		for (int item : answer) {
+			System.out.println(item);	
+		}
+	}
+	
+	public int[] solution(String[] genres, int[] plays) {
+        int[] answer = {};
+        
+        int songCount = genres.length;
+        
+        HashMap<String, Integer> totalMap = new HashMap<String, Integer>();
+        HashMap<String, HashMap<Integer, Integer>> infoMap = new HashMap<String, HashMap<Integer,Integer>>();
+        
+        for (int i = 0; i < songCount; i++) {
+        	String genre = genres[i];
+        	int play = plays[i];
+        	
+        	int total = totalMap.getOrDefault(genre, 0);
+        	totalMap.put(genre, total + play);
+        	
+        	if (infoMap.containsKey(genre) == false)
+        		infoMap.put(genre, new HashMap<Integer, Integer>());
+        	
+        	HashMap<Integer, Integer> songMap = infoMap.get(genre);
+        	songMap.put(i, play);
+        }
+
+        List<String> genreRankList = new ArrayList<String>(totalMap.keySet());
+        genreRankList.sort((l, r) -> totalMap.get(r) - totalMap.get(l));
+
+        List<Integer> answerList = new ArrayList<Integer>();
+        for (int i = 0; i < genreRankList.size(); i++) {
+        	HashMap<Integer, Integer> songMap = infoMap.get(genreRankList.get(i));
+        	List<Integer> songRankList = new ArrayList<Integer>(songMap.keySet());
+        	songRankList.sort((l, r) -> songMap.get(r) - songMap.get(l));
+        	
+        	List<Integer> tempList = new ArrayList<Integer>();
+        	for (int j = 0; j < songRankList.size(); j++) {
+        		if (j >= 2)
+        			break;
+        		
+            	tempList.add(songRankList.get(j));
+        	}
+        	
+        	if (tempList.size() == 2) {
+        		int firstNumber = tempList.get(0);
+        		int secondNumber = tempList.get(1);
+        		if (songMap.get(firstNumber) == songMap.get(secondNumber))
+        		{
+        			if (firstNumber > secondNumber)
+        				Collections.reverse(tempList);
+        		}
+        	}
+        	
+        	for (int j = 0; j < tempList.size(); j++) {
+        		answerList.add(tempList.get(j));
+        	}
+        }
+        
+        answer = new int[answerList.size()];
+        for (int i = 0; i < answerList.size(); i++) {
+        	answer[i] = answerList.get(i);
+        }
+        
+        return answer;
+    }
 }

@@ -1,12 +1,12 @@
 package main;
 
-import kakao.DartGame;
+import programmers.kit.hash.Level4;
 
 public class Main {
 
 	public static void main(String[] args) {
 
-		DartGame l = new DartGame();
+		Level4 l = new Level4();
 		
 		l.main();
 	}
