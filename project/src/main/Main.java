@@ -1,6 +1,6 @@
 package main;
 
-import programmers.kit.stack.Level1;
+import programmers.kit.greedy.Level1;
 
 public class Main {
 
