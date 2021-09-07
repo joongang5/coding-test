@@ -7,14 +7,4 @@ public class TruckWork {
 	public TruckWork(TruckWorkType type) {
 		this.type = type;
 	}
-	
-	public int getRequiredTime() {
-		switch (type) {
-		case Move:
-			return 6;
-		case PickUp:
-			return 6;
-		}
-		return -1;
-	}
 }
