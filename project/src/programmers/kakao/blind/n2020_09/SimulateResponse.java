@@ -4,10 +4,10 @@ public class SimulateResponse {
 
 	private String status;
 	private int time;
-	private int failedRequestsCount;
-	private float distance;
+	private String failedRequestsCount;
+	private String distance;
 
-	public SimulateResponse(String status, int time, int failedRequestsCount, float distance) {
+	public SimulateResponse(String status, int time, String failedRequestsCount, String distance) {
 		this.status = status;
 		this.time = time;
 		this.failedRequestsCount = failedRequestsCount;
@@ -22,11 +22,11 @@ public class SimulateResponse {
 		return time;
 	}
 
-	public int getFailedRequestsCount() {
+	public String getFailedRequestsCount() {
 		return failedRequestsCount;
 	}
 
-	public float getDistance() {
+	public String getDistance() {
 		return distance;
 	}
 }

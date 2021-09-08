@@ -28,8 +28,8 @@ public class LocationManager {
 		
 		for (int i = 0; i < aspectSize; i++) {
 			for (int j = 0; j < aspectSize; j++) {
-				int id = (aspectSize - i - 1) + (aspectSize * j);
-				locationMap.put(id, new Location(id, i, j, locationServerMap.get(id)));
+				int id = i + j * aspectSize;
+				locationMap.put(id, new Location(id, j, i, locationServerMap.get(id)));
 			}
 		}
 	}

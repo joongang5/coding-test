@@ -1,9 +1,9 @@
 package programmers.kakao.blind.n2020_09;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Queue;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,7 +14,7 @@ public class APIHelper {
 
 	private static final String BASE_URL = "https://kox947ka1a.execute-api.ap-northeast-2.amazonaws.com/prod/users/";
 	private static final String CONTENT_TYPE = "application/json";
-	private static final String X_AUTH_TOKEN = "f942541d659f673f00f316d89a37abb7";
+	private static final String X_AUTH_TOKEN = "20939a5405244efefeecbff3b6a10213";
 	
 	private static String authKey;
 	
@@ -41,8 +41,8 @@ public class APIHelper {
 			JSONObject rootObj = (JSONObject) parser.parse(json);
 			
 			authKey = (String) rootObj.get("auth_key");
-			problem = Integer.parseInt((String) rootObj.get("problem"));
-			time = Integer.parseInt((String) rootObj.get("time"));
+			problem = ((Long) rootObj.get("problem")).intValue();
+			time = ((Long) rootObj.get("time")).intValue();
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e) {
@@ -55,7 +55,7 @@ public class APIHelper {
 		properties.put("Authorization", authKey);
 		properties.put("Content-Type", CONTENT_TYPE);
 		
-		String response = HttpURLConnUtil.doPostRequest(BASE_URL + "locations", properties, null);
+		String response = HttpURLConnUtil.doGetRequest(BASE_URL + "locations", properties, null);
 		
 		return parseLocationAPI(response);
 	}
@@ -71,8 +71,8 @@ public class APIHelper {
 			Iterator<JSONObject> iter = locations.iterator();
 			while (iter.hasNext()) {
 				JSONObject obj = iter.next();
-				int id = Integer.parseInt((String) obj.get("id"));
-				int count = Integer.parseInt((String) obj.get("located_bikes_count"));
+				int id = ((Long) obj.get("id")).intValue();
+				int count = ((Long) obj.get("located_bikes_count")).intValue();
 				locationMap.put(id, count);
 			}
 		} catch (ParseException e) {
@@ -88,7 +88,7 @@ public class APIHelper {
 		properties.put("Authorization", authKey);
 		properties.put("Content-Type", CONTENT_TYPE);
 		
-		String response = HttpURLConnUtil.doPostRequest(BASE_URL + "trucks", properties, null);
+		String response = HttpURLConnUtil.doGetRequest(BASE_URL + "trucks", properties, null);
 		
 		return parseTrucksAPI(response);
 	}
@@ -104,9 +104,9 @@ public class APIHelper {
 			Iterator<JSONObject> iter = trucks.iterator();
 			while (iter.hasNext()) {
 				JSONObject obj = iter.next();
-				int id = Integer.parseInt((String) obj.get("id"));
-				int locationId = Integer.parseInt((String) obj.get("location_id"));
-				int loadedBikesCount = Integer.parseInt((String) obj.get("loaded_bikes_count"));
+				int id = ((Long) obj.get("id")).intValue();
+				int locationId = ((Long) obj.get("location_id")).intValue();
+				int loadedBikesCount = ((Long) obj.get("loaded_bikes_count")).intValue();
 				
 				Truck truck = new Truck(id, locationId, loadedBikesCount);
 				truckMap.put(id, truck);
@@ -120,31 +120,31 @@ public class APIHelper {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static SimulateResponse SimulateAPI(HashMap<Integer, ArrayList<Integer>> commandMap) {
+	public static SimulateResponse SimulateAPI(HashMap<Integer, Queue<TruckWorkType>> commandMap) {
 		HashMap<String, String> properties = new HashMap<String, String>();
 		properties.put("Authorization", authKey);
 		properties.put("Content-Type", CONTENT_TYPE);
 
 		JSONObject root = new JSONObject();
 		JSONArray commands = new JSONArray();
-		for (Map.Entry<Integer, ArrayList<Integer>> entry : commandMap.entrySet()) {
+		for (Map.Entry<Integer, Queue<TruckWorkType>> entry : commandMap.entrySet()) {
 			JSONObject commandItem = new JSONObject();
 			commandItem.put("truck_id", entry.getKey());
 			
 			JSONArray commandArr = new JSONArray();
-			for (Integer commandId : entry.getValue()) {
-				commandArr.add(commandId);	
+			Queue<TruckWorkType> commandQueue = entry.getValue();
+			while (commandQueue.isEmpty() == false) {
+				commandArr.add(commandQueue.poll().getValue());
 			}
 			commandItem.put("command", commandArr);
 
 			commands.add(commandItem);
 		}
 		root.put("commands", commands);
-
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("commands", root.toString());
 		
-		String response = HttpURLConnUtil.doPostRequest(BASE_URL + "simulate", properties, params);
+		System.out.println(root.toString());
+		
+		String response = HttpURLConnUtil.doPutRequest(BASE_URL + "simulate", properties, root.toString());
 		
 		return parseSimulateAPI(response);
 	}
@@ -155,9 +155,9 @@ public class APIHelper {
 		try {
 			JSONObject rootObj = (JSONObject) parser.parse(json);
 			String status = (String) rootObj.get("status");
-			int time = Integer.parseInt((String) rootObj.get("time"));
-			int failedRequestsCount = Integer.parseInt((String) rootObj.get("failed_requests_count"));
-			float distance = Float.parseFloat((String) rootObj.get("distance"));
+			int time = ((Long) rootObj.get("time")).intValue();
+			String failedRequestsCount = (String) rootObj.get("failed_requests_count");
+			String distance = (String) rootObj.get("distance");
 			
 			return new SimulateResponse(status, time, failedRequestsCount, distance);
 		} catch (ParseException e) {
@@ -166,5 +166,29 @@ public class APIHelper {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static void ScoreAPI() {
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("Authorization", authKey);
+		properties.put("Content-Type", CONTENT_TYPE);
+		
+		String response = HttpURLConnUtil.doGetRequest(BASE_URL + "score", properties, null);
+		
+		parseScoreAPI(response);
+	}
+	
+	private static void parseScoreAPI(String json) {
+		JSONParser parser = new JSONParser();
+
+		try {
+			JSONObject rootObj = (JSONObject) parser.parse(json);
+			String score = (String) rootObj.get("score");
+			System.out.println("score : " + score);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
 	}
 }

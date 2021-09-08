@@ -2,7 +2,6 @@ package programmers.kakao.blind.n2020_09;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
 
 public class Truck {
 
@@ -50,17 +49,29 @@ public class Truck {
 		return position;
 	}
 	
+	public Queue<TruckWorkType> getWorkQueue() {
+		return workQueue;
+	}
+	
 	public void addWork(TruckWorkType workType) {
-		if (workQueue.size() >= MAX_WORK_COUNT)
-			return;
-		
-		workQueue.add(workType);
+		boolean addible = true;
 		
 		if (workType == TruckWorkType.PutBike) {
 			loadedBikeCount++;
+			if (loadedBikeCount > MAX_BIKE_COUNT) {
+				loadedBikeCount = MAX_BIKE_COUNT;
+				addible = false;
+			}
 		} else if (workType == TruckWorkType.DropBike) {
 			loadedBikeCount--;
+			if (loadedBikeCount < 0) {
+				loadedBikeCount = 0;
+				addible = false;
+			}
 		}
+		
+		if (addible)
+			workQueue.add(workType);
 	}
 	
 	public TruckWorkType pollWork() {

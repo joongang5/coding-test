@@ -3,10 +3,15 @@ package programmers.kakao.blind.n2020_09;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
 public class TruckManager {
 
 	private HashMap<Integer, Truck> truckMap;
+	
+	public TruckManager() {
+		truckMap = new HashMap<Integer, Truck>();
+	}
 	
 	public boolean wasInit() {
 		return truckMap.isEmpty() == false;
@@ -32,8 +37,8 @@ public class TruckManager {
 		}
 	}
 	
-	public HashMap<Integer, ArrayList<Integer>> generateCommands(ArrayList<Location[]> workLocationList) {
-		HashMap<Integer, ArrayList<Integer>> commands = new HashMap<Integer, ArrayList<Integer>>();
+	public HashMap<Integer, Queue<TruckWorkType>> generateCommands(ArrayList<Location[]> workLocationList) {
+		HashMap<Integer, Queue<TruckWorkType>> commands = new HashMap<Integer, Queue<TruckWorkType>>();
 		
 		for (Location[] locations : workLocationList) {
 			Location overflowLocation = locations[1];
@@ -52,13 +57,14 @@ public class TruckManager {
 			
 			pushMoveCommands(truck, lackLocation);
 			
-			while (truck.getLoadedBikeCount() > 0) {
-				truck.addWork(TruckWorkType.DropBike);
+  			while (truck.getLoadedBikeCount() > 0) {
+ 				truck.addWork(TruckWorkType.DropBike);
 			}
 			
+			commands.put(truck.getId(), truck.getWorkQueue());
 		}
 		
-		return null;
+		return commands;
 	}
 	
 	public void pushMoveCommands(Truck truck, Location goalLocation) {
@@ -67,8 +73,8 @@ public class TruckManager {
 		int goalX = goalLocation.getPosition().getX();
 		int goalY = goalLocation.getPosition().getY();
 		
-		int moveX = startX - goalX;
-		int moveY = startY - goalY;
+		int moveX = goalX - startX;
+		int moveY = goalY - startY;
 		
 		while (moveX != 0 || moveY != 0) {
 			if (moveX > 0) {
@@ -91,8 +97,21 @@ public class TruckManager {
 	}
 	
 	private Truck findNearestTruck(Location location) {
+		int minDistance = Integer.MAX_VALUE;
+		Truck nearestTruck = null;
 		
-		
-		return null;
+		for (Map.Entry<Integer, Truck> entry : truckMap.entrySet()) {
+			Truck truck = entry.getValue();
+			
+			Position truckPosition = truck.getPosition();
+			Position locationPosition = location.getPosition();
+			
+			int distance = truckPosition.getDistance(locationPosition);
+			if (distance < minDistance) {
+				minDistance = distance;
+				nearestTruck = truck;
+			}
+		}
+		return nearestTruck;
 	}
 }

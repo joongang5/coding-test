@@ -1,7 +1,7 @@
 package programmers.kakao.blind.n2020_09;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Queue;
 
 public class Main {
 	
@@ -12,13 +12,22 @@ public class Main {
 		
 		while (true) {
 			HashMap<Integer, Integer> locationMap = APIHelper.LocationsAPI();
+			
 			HashMap<Integer, Truck> truckMap = APIHelper.TrucksAPI();
 
-			HashMap<Integer, ArrayList<Integer>> commands = scenario.update(locationMap, truckMap);
+			HashMap<Integer, Queue<TruckWorkType>> commands = scenario.update(locationMap, truckMap);
 			
 			SimulateResponse res = APIHelper.SimulateAPI(commands);
-			if (res.getStatus() == "finished")
-				break;
+			if (res.getStatus() == "finished") {
+				APIHelper.ScoreAPI();
+				break;	
+			}
+			
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
