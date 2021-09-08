@@ -5,30 +5,30 @@ import java.util.HashMap;
 
 public class Scenario {
 
-	private ServiceArea area;
-	
-	private HashMap<Integer, Truck> truckMap;
+	private LocationManager locationManager;
+	private TruckManager truckManager;
 	
 	public Scenario() {
-		area = new ServiceArea();
+		locationManager = new LocationManager();
 	}
 	
 	public HashMap<Integer, ArrayList<Integer>> update(HashMap<Integer, Integer> locationMap, HashMap<Integer, Truck> truckMap) {
-		if (area.wasInit() == false)
-			area.init(locationMap);
+		if (locationManager.wasInit() == false)
+			locationManager.init(locationMap);
 		else
-			area.update(locationMap);
+			locationManager.update(locationMap);
 		
-		this.truckMap = truckMap;
+		if (truckManager.wasInit() == false)
+			truckManager.init(truckMap, locationManager.getLocationMap());
+		else
+			truckManager.update(truckMap, locationManager.getLocationMap());
 		
 		return generateCommands();
 	}
 	
 	private HashMap<Integer, ArrayList<Integer>> generateCommands() {
-		HashMap<Integer, ArrayList<Integer>> commands = new HashMap<Integer, ArrayList<Integer>>();
+		ArrayList<Location[]> workLocationList = locationManager.getWorkLocationList();
 		
-		
-		
-		return commands;
+		return truckManager.generateCommands(workLocationList);
 	}
 }

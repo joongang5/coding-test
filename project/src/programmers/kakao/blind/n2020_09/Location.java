@@ -3,17 +3,19 @@ package programmers.kakao.blind.n2020_09;
 public class Location {
 
 	private int id;
-	private int positionX;
-	private int positionY;
 	private int bikeCount;
+	private int defaultBikeCount;
+	private Position position;
 	
 	public static final int LENGTH = 100;
 	
 	public Location(int id, int positionX, int positionY, int bikeCount) {
 		this.id = id;
-		this.positionX = positionX;
-		this.positionY = positionY;
 		this.bikeCount = bikeCount;
+		defaultBikeCount = bikeCount;
+		position = new Position();
+		position.setX(positionX);
+		position.setY(positionY);
 	}
 	
 	public int getId() {
@@ -24,12 +26,8 @@ public class Location {
 		this.id = id;
 	}
 
-	public int getPositionX() {
-		return positionX;
-	}
-	
-	public int getPositionY() {
-		return positionY;
+	public Position getPosition() {
+		return position;
 	}
 
 	public void setBikeCount(int bikeCount) {
@@ -38,5 +36,13 @@ public class Location {
 	
 	public int getBikeCount() {
 		return bikeCount;
+	}
+	
+	public boolean needStuff() {
+		return bikeCount <= defaultBikeCount / 2;
+	}
+	
+	public boolean isOverflow() {
+		return bikeCount > defaultBikeCount;
 	}
 }
