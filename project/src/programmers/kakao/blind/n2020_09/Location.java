@@ -38,6 +38,15 @@ public class Location {
 		return bikeCount;
 	}
 	
+	public int pullExtraBikeCount() {
+		if (bikeCount <= 0)
+			return 0;
+		
+		int extraCount = Math.max(1, bikeCount - defaultBikeCount);
+		bikeCount -= extraCount;
+		return extraCount;
+	}
+	
 	public boolean needStuff() {
 		return bikeCount <= defaultBikeCount / 2;
 	}

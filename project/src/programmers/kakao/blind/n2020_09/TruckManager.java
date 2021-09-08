@@ -33,39 +33,61 @@ public class TruckManager {
 	}
 	
 	public HashMap<Integer, ArrayList<Integer>> generateCommands(ArrayList<Location[]> workLocationList) {
+		HashMap<Integer, ArrayList<Integer>> commands = new HashMap<Integer, ArrayList<Integer>>();
+		
 		for (Location[] locations : workLocationList) {
-			Truck truck = findNearestTruck(locations[1]);
+			Location overflowLocation = locations[1];
 			
-			int startX = truck.getPosition().getX();
-			int startY = truck.getPosition().getY();
-			int goalX = locations[1].getPosition().getX();
-			int goalY = locations[1].getPosition().getY();
+			Truck truck = findNearestTruck(overflowLocation);
 			
-			int moveX = startX - goalX;
-			int moveY = startY - goalY;
+			pushMoveCommands(truck, overflowLocation);
 			
-			while (moveX != 0 || moveY != 0) {
-				if (moveX > 0) {
-					truck.pushWork(TruckWorkType.MoveRight);
-					moveX--;
-				}
-				else if (moveX < 0) {
-					truck.pushWork(TruckWorkType.MoveLeft);
-					moveX++;
-				}
-				else if (moveY > 0) {
-					truck.pushWork(TruckWorkType.MoveUp);
-					moveY--;
-				}
-				else if (moveY < 0) {
-					truck.pushWork(TruckWorkType.MoveDown);
-					moveY++;
-				}
+			int pullCount = overflowLocation.pullExtraBikeCount();
+			while (pullCount > 0) {
+				truck.addWork(TruckWorkType.PutBike);
+				pullCount--;
 			}
 			
-			truck.pushWork(TruckWorkType.PutBike);
+			Location lackLocation = locations[0];
+			
+			pushMoveCommands(truck, lackLocation);
+			
+			while (truck.getLoadedBikeCount() > 0) {
+				truck.addWork(TruckWorkType.DropBike);
+			}
+			
 		}
+		
 		return null;
+	}
+	
+	public void pushMoveCommands(Truck truck, Location goalLocation) {
+		int startX = truck.getPosition().getX();
+		int startY = truck.getPosition().getY();
+		int goalX = goalLocation.getPosition().getX();
+		int goalY = goalLocation.getPosition().getY();
+		
+		int moveX = startX - goalX;
+		int moveY = startY - goalY;
+		
+		while (moveX != 0 || moveY != 0) {
+			if (moveX > 0) {
+				truck.addWork(TruckWorkType.MoveRight);
+				moveX--;
+			}
+			else if (moveX < 0) {
+				truck.addWork(TruckWorkType.MoveLeft);
+				moveX++;
+			}
+			else if (moveY > 0) {
+				truck.addWork(TruckWorkType.MoveUp);
+				moveY--;
+			}
+			else if (moveY < 0) {
+				truck.addWork(TruckWorkType.MoveDown);
+				moveY++;
+			}
+		}
 	}
 	
 	private Truck findNearestTruck(Location location) {
