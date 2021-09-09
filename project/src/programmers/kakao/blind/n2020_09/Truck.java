@@ -1,7 +1,10 @@
 package programmers.kakao.blind.n2020_09;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import org.json.simple.JSONArray;
 
 public class Truck {
 
@@ -12,8 +15,8 @@ public class Truck {
 	private Position position;
 	
 	private Queue<TruckWorkType> workQueue;
+	private int[] workLocationIds;
 	
-	private static final int MAX_WORK_COUNT = 10;
 	private static final int MAX_BIKE_COUNT = 20;
 	
 	public Truck(int id, int locationId, int loadedBikeCount) {
@@ -76,5 +79,32 @@ public class Truck {
 	
 	public TruckWorkType pollWork() {
 		return workQueue.poll();
+	}
+
+	public boolean isWorking() {
+		return workQueue.isEmpty() == false;
+	}
+
+	public boolean hasWorkingLocation(int lackId, int overflowId) {
+		if (workLocationIds == null)
+			return false;
+		
+		if (workLocationIds[WorkLocationType.Lack.getValue()] == lackId)
+			return true;
+
+		if (workLocationIds[WorkLocationType.Overflow.getValue()] == overflowId)
+			return true;
+		
+		return false;
+	}
+	
+	public void addWorkLocationIds(int lackId, int overflowId) {
+		workLocationIds = new int[WorkLocationType.Max.getValue()];
+		workLocationIds[WorkLocationType.Lack.getValue()] = lackId;
+		workLocationIds[WorkLocationType.Overflow.getValue()] = overflowId;
+	}
+	
+	public void clearWorkLocationIds() {
+		workLocationIds = null;
 	}
 }

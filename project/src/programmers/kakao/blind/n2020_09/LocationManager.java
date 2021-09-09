@@ -2,6 +2,7 @@ package programmers.kakao.blind.n2020_09;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class LocationManager {
@@ -59,6 +60,16 @@ public class LocationManager {
 				overflowLocationList = findAroundLocationList(lackLocation);
 			
 			for (Location overflowLocation : overflowLocationList) {
+				boolean isWorkingLocation = false;
+				for (Location[] locations : workList) {
+					if (locations[WorkLocationType.Overflow.getValue()].getId() == overflowLocation.getId()) {
+						isWorkingLocation = true;
+						break;
+					}
+				}
+				if (isWorkingLocation)
+					continue;
+				
 				Position overflowPosition = overflowLocation.getPosition();
 				
 				int distance = lackPosition.getDistance(overflowPosition);
@@ -80,6 +91,7 @@ public class LocationManager {
 		
 		for (Map.Entry<Integer, Location> entry : locationMap.entrySet()) {
 			Location location = entry.getValue();
+			
 			if (location.needStuff()) {
 				locationList.add(location);
 			}
@@ -92,6 +104,7 @@ public class LocationManager {
 		
 		for (Map.Entry<Integer, Location> entry : locationMap.entrySet()) {
 			Location location = entry.getValue();
+			
 			if (location.isOverflow()) {
 				locationList.add(location);
 			}
@@ -108,7 +121,6 @@ public class LocationManager {
 			if (locationList.isEmpty() == false)
 				break;
 		}
-		
 		return locationList;
 	}
 	
@@ -124,7 +136,6 @@ public class LocationManager {
 				}
 			}
 		}
-		
 		return locationList;
 	}
 }

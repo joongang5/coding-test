@@ -2,6 +2,7 @@ package programmers.kakao.blind.n2020_09;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 
 public class Scenario {
@@ -14,7 +15,7 @@ public class Scenario {
 		truckManager = new TruckManager();
 	}
 	
-	public HashMap<Integer, Queue<TruckWorkType>> update(HashMap<Integer, Integer> locationMap, HashMap<Integer, Truck> truckMap) {
+	public void update(HashMap<Integer, Integer> locationMap, HashMap<Integer, Truck> truckMap) {
 		if (locationManager.wasInit() == false)
 			locationManager.init(locationMap);
 		else
@@ -24,11 +25,9 @@ public class Scenario {
 			truckManager.init(truckMap, locationManager.getLocationMap());
 		else
 			truckManager.update(truckMap, locationManager.getLocationMap());
-		
-		return generateCommands();
 	}
 	
-	private HashMap<Integer, Queue<TruckWorkType>> generateCommands() {
+	public HashMap<Integer, Queue<TruckWorkType>> generateCommands() {
 		ArrayList<Location[]> workLocationList = locationManager.getWorkLocationList();
 		
 		return truckManager.generateCommands(workLocationList);

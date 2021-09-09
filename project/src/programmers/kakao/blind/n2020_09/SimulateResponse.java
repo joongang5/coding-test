@@ -29,4 +29,8 @@ public class SimulateResponse {
 	public String getDistance() {
 		return distance;
 	}
+	
+	public float getFailedRequestsCountValue() {
+		return Float.parseFloat(failedRequestsCount);
+	}
 }

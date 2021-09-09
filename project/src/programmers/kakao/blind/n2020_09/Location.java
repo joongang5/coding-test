@@ -48,7 +48,7 @@ public class Location {
 	}
 	
 	public boolean needStuff() {
-		return bikeCount <= defaultBikeCount / 2;
+		return bikeCount <= defaultBikeCount / 3;
 	}
 	
 	public boolean isOverflow() {

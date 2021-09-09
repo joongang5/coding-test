@@ -10,12 +10,20 @@ public class Main {
 
 		Scenario scenario = new Scenario();
 		
+		int tryCount = 0;
 		while (true) {
+			tryCount++;
+			if (tryCount == 16) {
+				System.out.println(tryCount);
+			}
+			
 			HashMap<Integer, Integer> locationMap = APIHelper.LocationsAPI();
 			
 			HashMap<Integer, Truck> truckMap = APIHelper.TrucksAPI();
 
-			HashMap<Integer, Queue<TruckWorkType>> commands = scenario.update(locationMap, truckMap);
+			scenario.update(locationMap, truckMap);
+			
+			HashMap<Integer, Queue<TruckWorkType>> commands = scenario.generateCommands();
 			
 			SimulateResponse res = APIHelper.SimulateAPI(commands);
 			if (res.getStatus() == "finished") {

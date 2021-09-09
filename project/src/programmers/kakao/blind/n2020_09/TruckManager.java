@@ -34,6 +34,9 @@ public class TruckManager {
 			
 			Location location = locationMap.get(truck.getLocationId()); 
 			truck.setPosition(location.getPosition());
+			
+			if (truck.isWorking() == false)
+				truck.clearWorkLocationIds();
 		}
 	}
 	
@@ -41,11 +44,19 @@ public class TruckManager {
 		HashMap<Integer, Queue<TruckWorkType>> commands = new HashMap<Integer, Queue<TruckWorkType>>();
 		
 		for (Location[] locations : workLocationList) {
-			Location overflowLocation = locations[1];
+			Location overflowLocation = locations[WorkLocationType.Overflow.getValue()];
+			Location lackLocation = locations[WorkLocationType.Lack.getValue()];
+
+			if (isWorkingLocation(lackLocation.getId(), overflowLocation.getId()))
+				continue;
 			
 			Truck truck = findNearestTruck(overflowLocation);
+			if (truck == null)
+				continue;
+
+			truck.addWorkLocationIds(lackLocation.getId(), overflowLocation.getId());
 			
-			pushMoveCommands(truck, overflowLocation);
+			pushMoveCommands(truck, truck.getPosition(), overflowLocation.getPosition());
 			
 			int pullCount = overflowLocation.pullExtraBikeCount();
 			while (pullCount > 0) {
@@ -53,25 +64,38 @@ public class TruckManager {
 				pullCount--;
 			}
 			
-			Location lackLocation = locations[0];
-			
-			pushMoveCommands(truck, lackLocation);
+			pushMoveCommands(truck, overflowLocation.getPosition(), lackLocation.getPosition());
 			
   			while (truck.getLoadedBikeCount() > 0) {
  				truck.addWork(TruckWorkType.DropBike);
 			}
-			
-			commands.put(truck.getId(), truck.getWorkQueue());
+		}
+		
+		for (Map.Entry<Integer, Truck> entry : truckMap.entrySet()) {
+			Truck truck = entry.getValue();
+			if (truck.isWorking())
+				commands.put(truck.getId(), truck.getWorkQueue());
 		}
 		
 		return commands;
 	}
 	
-	public void pushMoveCommands(Truck truck, Location goalLocation) {
-		int startX = truck.getPosition().getX();
-		int startY = truck.getPosition().getY();
-		int goalX = goalLocation.getPosition().getX();
-		int goalY = goalLocation.getPosition().getY();
+	private boolean isWorkingLocation(int lackId, int overflowId) {
+		for (Map.Entry<Integer, Truck> entry : truckMap.entrySet()) {
+			Truck truck = entry.getValue();
+			
+			if (truck.hasWorkingLocation(lackId, overflowId))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	private void pushMoveCommands(Truck truck, Position startPosition, Position goalPosition) {
+		int startX = startPosition.getX();
+		int startY = startPosition.getY();
+		int goalX = goalPosition.getX();
+		int goalY = goalPosition.getY();
 		
 		int moveX = goalX - startX;
 		int moveY = goalY - startY;
@@ -102,6 +126,8 @@ public class TruckManager {
 		
 		for (Map.Entry<Integer, Truck> entry : truckMap.entrySet()) {
 			Truck truck = entry.getValue();
+			if (truck.isWorking())
+				continue;
 			
 			Position truckPosition = truck.getPosition();
 			Position locationPosition = location.getPosition();

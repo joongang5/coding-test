@@ -133,8 +133,12 @@ public class APIHelper {
 			
 			JSONArray commandArr = new JSONArray();
 			Queue<TruckWorkType> commandQueue = entry.getValue();
+			int pollCount = 0;
 			while (commandQueue.isEmpty() == false) {
 				commandArr.add(commandQueue.poll().getValue());
+				
+				if (++pollCount >= 10)
+					break;
 			}
 			commandItem.put("command", commandArr);
 
