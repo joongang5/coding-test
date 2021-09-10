@@ -2,7 +2,6 @@ package programmers.kakao.blind.n2020_09;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
 
 public class Scenario {

@@ -6,17 +6,13 @@ import java.util.Queue;
 public class Main {
 	
 	public static void main(String[] args) {
-		APIHelper.startAPI();
+		int problem = 2;
+		
+		APIHelper.startAPI(problem);
 
 		Scenario scenario = new Scenario();
 		
-		int tryCount = 0;
 		while (true) {
-			tryCount++;
-			if (tryCount == 16) {
-				System.out.println(tryCount);
-			}
-			
 			HashMap<Integer, Integer> locationMap = APIHelper.LocationsAPI();
 			
 			HashMap<Integer, Truck> truckMap = APIHelper.TrucksAPI();
@@ -26,7 +22,7 @@ public class Main {
 			HashMap<Integer, Queue<TruckWorkType>> commands = scenario.generateCommands();
 			
 			SimulateResponse res = APIHelper.SimulateAPI(commands);
-			if (res.getStatus() == "finished") {
+			if (res.getStatus().equals("finished")) {
 				APIHelper.ScoreAPI();
 				break;	
 			}

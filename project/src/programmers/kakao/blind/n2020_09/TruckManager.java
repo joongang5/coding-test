@@ -30,7 +30,10 @@ public class TruckManager {
 	public void update(HashMap<Integer, Truck> truckServerMap, HashMap<Integer, Location> locationMap) {
 		for (Map.Entry<Integer, Truck> entry : truckMap.entrySet()) {
 			Truck truck = entry.getValue();
-			truck.setLoadedBikeCount(truckServerMap.get(entry.getKey()).getLoadedBikeCount());
+			Truck serverData = truckServerMap.get(truck.getId());
+			
+			truck.setLocationId(serverData.getLocationId());
+			truck.setLoadedBikeCount(serverData.getLoadedBikeCount());
 			
 			Location location = locationMap.get(truck.getLocationId()); 
 			truck.setPosition(location.getPosition());
@@ -47,6 +50,10 @@ public class TruckManager {
 			Location overflowLocation = locations[WorkLocationType.Overflow.getValue()];
 			Location lackLocation = locations[WorkLocationType.Lack.getValue()];
 
+			int pullCount = overflowLocation.pullExtraBikeCount();
+			if (pullCount <= 0)
+				continue;
+			
 			if (isWorkingLocation(lackLocation.getId(), overflowLocation.getId()))
 				continue;
 			
@@ -58,7 +65,6 @@ public class TruckManager {
 			
 			pushMoveCommands(truck, truck.getPosition(), overflowLocation.getPosition());
 			
-			int pullCount = overflowLocation.pullExtraBikeCount();
 			while (pullCount > 0) {
 				truck.addWork(TruckWorkType.PutBike);
 				pullCount--;

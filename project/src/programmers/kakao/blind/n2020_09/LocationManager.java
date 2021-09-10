@@ -2,7 +2,6 @@ package programmers.kakao.blind.n2020_09;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public class LocationManager {
@@ -52,14 +51,19 @@ public class LocationManager {
 		ArrayList<Location> overflowLocationList = findOverflowLocationList();
 		
 		for (Location lackLocation : lackLocationList) {
+			ArrayList<Location> targetLocationList;
+			if (overflowLocationList.isEmpty())
+				targetLocationList = findAroundLocationList(lackLocation);
+			else
+				targetLocationList = overflowLocationList;
+			
+			if (targetLocationList == null)
+				continue;
+			
 			int minDistance = Integer.MAX_VALUE;
 			Location minDistLocation = null;
 			Position lackPosition = lackLocation.getPosition();
-			
-			if (overflowLocationList.isEmpty())
-				overflowLocationList = findAroundLocationList(lackLocation);
-			
-			for (Location overflowLocation : overflowLocationList) {
+			for (Location overflowLocation : targetLocationList) {
 				boolean isWorkingLocation = false;
 				for (Location[] locations : workList) {
 					if (locations[WorkLocationType.Overflow.getValue()].getId() == overflowLocation.getId()) {

@@ -14,20 +14,20 @@ public class APIHelper {
 
 	private static final String BASE_URL = "https://kox947ka1a.execute-api.ap-northeast-2.amazonaws.com/prod/users/";
 	private static final String CONTENT_TYPE = "application/json";
-	private static final String X_AUTH_TOKEN = "20939a5405244efefeecbff3b6a10213";
+	private static final String X_AUTH_TOKEN = "a9617a7aee9f8baa46d4284b471b8fb9";
 	
 	private static String authKey;
 	
 	public static int problem;
 	public static int time;
 	
-	public static void startAPI() {
+	public static void startAPI(int problem) {
 		HashMap<String, String> properties = new HashMap<String, String>();
 		properties.put("X-Auth-Token", X_AUTH_TOKEN);
 		properties.put("Content-Type", CONTENT_TYPE);
 		
 		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("problem", "1");
+		params.put("problem", Integer.toString(problem));
 		
 		String response = HttpURLConnUtil.doPostRequest(BASE_URL + "start", properties, params);
 		
@@ -187,7 +187,7 @@ public class APIHelper {
 
 		try {
 			JSONObject rootObj = (JSONObject) parser.parse(json);
-			String score = (String) rootObj.get("score");
+			double score = (Double) rootObj.get("score");
 			System.out.println("score : " + score);
 		} catch (ParseException e) {
 			e.printStackTrace();
