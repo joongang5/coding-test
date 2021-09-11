@@ -1,13 +1,13 @@
 package main;
 
-import programmers.kit.greedy.Level1;
+import programmers.skill.level02.Problum01;
 
 public class Main {
 
 	public static void main(String[] args) {
 
-		Level1 l = new Level1();
-		
-		l.main();
+		Problum01 p = new Problum01();
+
+		p.main();
 	}
 }
