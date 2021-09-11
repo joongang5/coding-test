@@ -39,7 +39,7 @@ public class Location {
 	}
 	
 	public int pullExtraBikeCount() {
-		if (bikeCount <= 0)
+		if (bikeCount <= getNeedStuffCount() + 1)
 			return 0;
 		
 		int extraCount = Math.max(1, bikeCount - defaultBikeCount);
@@ -48,7 +48,11 @@ public class Location {
 	}
 	
 	public boolean needStuff() {
-		return bikeCount <= defaultBikeCount / 3;
+		return bikeCount <= getNeedStuffCount();
+	}
+	
+	private int getNeedStuffCount() {
+		return defaultBikeCount / 3;
 	}
 	
 	public boolean isOverflow() {

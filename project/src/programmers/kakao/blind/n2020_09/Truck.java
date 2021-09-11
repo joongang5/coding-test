@@ -1,10 +1,7 @@
 package programmers.kakao.blind.n2020_09;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import org.json.simple.JSONArray;
 
 public class Truck {
 
@@ -36,6 +33,10 @@ public class Truck {
 		return locationId;
 	}
 	
+	public void setLocationId(int locationId) {
+		this.locationId = locationId;
+	}
+	
 	public int getLoadedBikeCount() {
 		return loadedBikeCount;
 	}
@@ -55,7 +56,7 @@ public class Truck {
 	public Queue<TruckWorkType> getWorkQueue() {
 		return workQueue;
 	}
-	
+
 	public void addWork(TruckWorkType workType) {
 		boolean addible = true;
 		
