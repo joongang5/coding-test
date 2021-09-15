@@ -1,5 +1,8 @@
 package programmers.kakao.blind.n2022_09;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /* 문제 설명
 문제 설명
 양의 정수 n이 주어집니다. 이 숫자를 k진수로 바꿨을 때, 변환된 수 안에 아래 조건에 맞는 소수(Prime number)가 몇 개인지 알아보려 합니다.
@@ -17,10 +20,12 @@ P처럼 소수 양쪽에 아무것도 없는 경우
 제한사항
 1 ≤ n ≤ 1,000,000
 3 ≤ k ≤ 10
+
 입출력 예
-n	k	result
-437674	3	3
-110011	10	2
+n			k		result
+437674		3		3
+110011		10		2
+
 입출력 예 설명
 입출력 예 #1
 
@@ -34,14 +39,54 @@ n	k	result
 public class Problum2 {
 
 	public void main() {
+		int n = 437674;
+		int k = 3;
 		
+		int answer = solution(n, k);
+		System.out.println(answer);
 	}
 	
 	public int solution(int n, int k) {
-        int answer = -1;
+        int answer = 0;
         
+        StringBuilder sb = new StringBuilder();
         
+        while (n > 0) {
+        	int quotient = n / k;
+        	int remainder = n % k;
+        	
+        	sb.append(remainder);
+        	
+        	n = quotient;
+        }
+        
+        sb.reverse();
+        
+        Pattern pattern = Pattern.compile("[1-9]+");
+        
+        Matcher matcher = pattern.matcher(sb.toString());
+        
+        while (matcher.find()) {
+        	String group = matcher.group();
+        	
+        	if (isPrimeNumber(Integer.parseInt(group)))
+        		answer++;
+        }
         
         return answer;
+    }
+	
+    public boolean isPrimeNumber(int number) {
+    	if (number <= 1)
+    		return false;
+    	
+    	int sqrtNumber = (int)Math.sqrt(number);
+    	
+    	for (int i = 2; i <= sqrtNumber; i++) {
+    		if (number % i == 0)
+    			return false;
+    	}
+    	
+    	return true;
     }
 }
