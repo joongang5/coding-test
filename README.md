@@ -9,7 +9,7 @@
 * ex) programmers.kit.hash.Level1
 
 ### 풀이 실행 방법
-* main패키지 -> Main클래스 -> static main함수 -> 풀이 클래스.main()
+* main패키지 -> Main클래스 -> static main함수 -> 풀이 클래스.main() 호출
 ```java
 package main;
 
