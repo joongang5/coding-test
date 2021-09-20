@@ -1,4 +1,4 @@
-package kakao;
+package programmers.kakao.blind.n2018;
 
 import java.util.Stack;
 
