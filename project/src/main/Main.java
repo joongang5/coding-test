@@ -1,6 +1,6 @@
 package main;
 
-import programmers.kakao.blind.n2022_09.Problum2;
+import nhn.Problum2;
 
 public class Main {
 
